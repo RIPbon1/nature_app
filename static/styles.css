@@ -1,0 +1,101 @@
+/* Base */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: linear-gradient(135deg, #71ea66, #ffffff);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  height: 80px;
+  background: linear-gradient(135deg, #2f8bf5, #5b548a);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-logo { width: 45px; height: 45px; }
+.header-title { font-size: 28px; font-weight: bold; letter-spacing: 1px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.header-link { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 16px; transition: color 0.3s ease; }
+.header-link:hover { color: #fff; }
+
+/* Shared cards */
+.anonymous-index-container,
+.app-pollution-index-container {
+  margin-left: 40px;
+  width: 600px;
+  min-height: 160px;
+  margin-top: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  background: #ffffff;
+}
+
+/* Weather panel */
+.weather-index-container {
+  position: absolute;
+  right: 55px;
+  top: 10px;
+  color: #fff;
+  text-align: center;
+  margin: 100px auto;
+  width: 500px;
+  height: 360px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #00feba, #5b548a);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  padding: 30px 25px;
+}
+.weather-index { display: flex; flex-direction: column; align-items: center; }
+.weather-icon { width: 120px; margin-bottom: 10px; }
+.weather-index-container h1 { font-size: 48px; font-weight: 600; margin: 5px 0; }
+.weather-index-container h2 { font-size: 22px; font-weight: 400; margin-top: -5px; color: rgba(255,255,255,0.85); }
+.details { display: flex; justify-content: space-around; margin-top: 25px; width: 100%; }
+.col { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.15); padding: 10px 15px; border-radius: 12px; transition: background 0.3s ease; }
+.col:hover { background: rgba(255,255,255,0.25); }
+.humidity-image, .wind-image { width: 28px; height: 28px; filter: brightness(0) invert(1); }
+.col p { margin: 0; font-size: 14px; color: #fff; }
+.col p:first-child { font-weight: bold; font-size: 16px; }
+
+/* Pollution panel */
+.app-pollution-index-container { position: relative; color: #ffffff; overflow: hidden; font-family: sans-serif; background: linear-gradient(135deg, #4c6ef5, #82c7ff); }
+.app-pollution-index { font-size: 20px; display: flex; justify-content: center; align-items: center; }
+.wind-effect { position: absolute; top: 0; left: -150%; width: 250%; height: 100%; background: repeating-linear-gradient(120deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 8px); animation: windMove 4s linear infinite; }
+@keyframes windMove { 0% { transform: translateX(0); } 100% { transform: translateX(30%); } }
+.pollution-content { position: relative; z-index: 1; }
+.pollution-content h3 { margin: 0; font-size: 18px; font-weight: bold; }
+.pollution-content .aqi-detail { font-size: 14px; opacity: 0.9; }
+.aqi-row { display: flex; align-items: center; gap: 12px; margin: 8px 0 10px 0; }
+.aqi-value { font-size: 32px; font-weight: 700; line-height: 1; }
+.aqi-badge { font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.5px; }
+.aqi-bar { position: relative; height: 10px; border-radius: 999px; background: linear-gradient(90deg, #2ecc71, #f1c40f, #e67e22, #e74c3c); box-shadow: inset 0 1px 2px rgba(0,0,0,0.25); margin: 6px 0 10px 0; overflow: hidden; }
+.aqi-marker { position: absolute; top: -3px; width: 2px; height: 16px; background: #ffffff; box-shadow: 0 0 6px rgba(255,255,255,0.9); border-radius: 1px; }
+.pollutants { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pollutant { font-size: 12px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.28); padding: 6px 8px; border-radius: 8px; }
+
+/* Tips panel: make it lively */
+.anonymous-index-container { background: linear-gradient(135deg, #ffffff, #f4fbff); border: 1px solid #e9f2ff; }
+.anonymous-index-container h3 { margin: 0 0 8px 0; font-size: 18px; font-weight: 700; color: #2d2d2d; }
+.tips-list { margin: 0; padding-left: 18px; color: #2d2d2d; font-size: 14px; }
+.tips-list li { margin: 4px 0; }
+.tips-list li::marker { content: "✔  "; color: #2f8bf5; }
+.tips-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.tips-badge { background: #eef6ff; color: #2f63b5; border: 1px solid #d6e8ff; padding: 6px 10px; border-radius: 999px; font-size: 12px; }
+
+/* Chatbot */
+.chatbot-button-container { display: flex; margin-top: 30px; justify-content: center; }
+.chatbot-button { height: 50px; width: 1000px; border: 2px solid #ccc; border-radius: 25px; padding: 0 20px; font-size: 16px; outline: none; transition: border-color 0.3s ease; }
+.chatbot-button:focus { border-color: #2d89ef; box-shadow: 0 0 5px rgba(45,137,239,0.3); }
+
+/* Anchors */
+#aqi { scroll-margin-top: 100px; }
+
+
+
+

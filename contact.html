@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+      .contact-wrap { padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+      .contact-card { background: #fff; border: 1px solid #e9eef5; border-radius: 12px; padding: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+      .contact-title { margin: 0 0 8px 0; font-size: 22px; color: #1f2d3d; }
+      .contact-line { margin: 4px 0; color: #4a6378; }
+      .contact-form { display: grid; gap: 10px; }
+      .contact-form input, .contact-form textarea { padding: 10px 12px; border: 1px solid #dfe7f0; border-radius: 10px; font-size: 14px; }
+      .submit-btn { width: fit-content; background: #2f8bf5; color: #fff; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-left">
+        <img src="/static/weather.png" class="header-logo" alt="Logo">
+        <div class="header-title">AirAware</div>
+      </div>
+      <div class="header-right">
+        <a href="/" class="header-link">Home</a>
+        <a href="/weather" class="header-link">Weather</a>
+        <a href="/chatbot" class="header-link">Chatbot</a>
+        <a href="/contact" class="header-link">Contact</a>
+      </div>
+    </div>
+
+    <div class="contact-wrap">
+      <div class="contact-card">
+        <h2 class="contact-title">Contact Us</h2>
+        <p class="contact-line"><strong>Email:</strong> support@airaware.example</p>
+        <p class="contact-line"><strong>Phone:</strong> +1 (555) 123-4567</p>
+        <p class="contact-line"><strong>Address:</strong> 123 Clean Air Ave, Green City</p>
+      </div>
+      <div class="contact-card">
+        <h2 class="contact-title">Send a Message</h2>
+        <form class="contact-form" id="contact-form">
+          <input type="text" name="name" placeholder="Your name" required>
+          <input type="email" name="email" placeholder="Your email" required>
+          <textarea rows="5" name="error" placeholder="Describe the error you're seeing" required></textarea>
+          <button class="submit-btn" type="submit">Submit</button>
+        </form>
+        <div id="contact-status" class="contact-line"></div>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById('contact-form');
+      const statusEl = document.getElementById('contact-status');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        statusEl.textContent = 'Sending...';
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+        try {
+          const resp = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await resp.json();
+          if (resp.ok && data?.success) {
+            statusEl.textContent = 'Thanks! Your message has been sent.';
+            form.reset();
+          } else {
+            statusEl.textContent = data?.error || 'Failed to send message.';
+          }
+        } catch (err) {
+          statusEl.textContent = 'Network error while sending message.';
+        }
+      });
+    </script>
+  </body>
+  </html>
+

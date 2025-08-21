@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 30px;
+        align-items: center;
+        padding: 60px 40px;
+      }
+      .hero-heading {
+        font-size: 46px;
+        line-height: 1.1;
+        margin: 0 0 10px 0;
+        color: #17324d;
+      }
+      .hero-sub {
+        font-size: 18px;
+        color: #355b7d;
+        margin: 0 0 20px 0;
+      }
+      .cta-row { display: flex; gap: 14px; margin-top: 12px; }
+      .btn { background: #2f8bf5; color: #fff; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; font-weight: 600; }
+      .btn.secondary { background: #f5f7fb; color: #2f8bf5; border: 1px solid #cfe0ff; }
+      .feature-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
+      .feature-card { background: #fff; border: 1px solid #e9eef5; border-radius: 12px; padding: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+      .feature-title { margin: 0 0 6px 0; font-weight: 700; color: #1f2d3d; }
+      .feature-desc { margin: 0; color: #586f85; font-size: 14px; }
+      .illustration { justify-self: end; width: 420px; max-width: 90%; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.1)); }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-left">
+        <img src="/static/weather.png" class="header-logo" alt="Logo">
+        <div class="header-title">AirAware</div>
+      </div>
+      <div class="header-right">
+        <a href="/" class="header-link">Home</a>
+        <a href="/weather" class="header-link">Weather</a>
+        <a href="/chatbot" class="header-link">Chatbot</a>
+        <a href="/contact" class="header-link">Contact</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div>
+        <h1 class="hero-heading">Breathe better with live weather and air quality insights</h1>
+        <p class="hero-sub">Real-time local forecasts, AQI levels, and smart tips to help you plan your day and stay healthy.</p>
+        <div class="cta-row">
+          <a class="btn" href="/weather">Check Weather</a>
+          <a class="btn secondary" href="/weather#aqi">View Air Quality</a>
+        </div>
+      </div>
+      <img class="illustration" src="/static/sun.png" alt="Sunny illustration" />
+    </section>
+
+    <section class="feature-cards">
+      <div class="feature-card">
+        <div class="feature-title">Hyper-local Weather</div>
+        <p class="feature-desc">Accurate conditions based on your location with beautiful visuals.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">Air Quality Index</div>
+        <p class="feature-desc">Understand AQI at a glance with color-coded indicators and details.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">Smart Tips</div>
+        <p class="feature-desc">Personalized, actionable suggestions for any conditions.</p>
+      </div>
+    </section>
+  </body>
+  </html>
+
