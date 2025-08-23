@@ -2,12 +2,18 @@
 <html>
   <head>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+      .header-title {
+        text-decoration: none;
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <div class="header">
       <div class="header-left">
         <img src="/static/weather.png" class="header-logo" alt="Logo">
-        <div class="header-title">AirAware</div>
+        <a href="/" class="header-title">AirAware</a>
       </div>
       <div class="header-right">
         <a href="/" class="header-link">Home</a>
@@ -57,14 +63,23 @@
               <p>Wind speed</p>
             </div>
           </div>
-
         </div>
       </div>
     </div>
     <div class="chatbot-button-container">
-      <input class="chatbot-button" placeholder="Hi! How can I help you today?">
+      <form id="chatbot-form">
+        <input id="chatbot-input" class="chatbot-button" placeholder="Hi! How can I help you today?">
+      </form>
     </div>
     <script src="/static/weather.js"></script>
+    <script>
+      document.getElementById('chatbot-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = document.getElementById('chatbot-input').value.trim();
+        if (message) {
+          window.location.href = `/chatbot?message=${encodeURIComponent(message)}`;
+        }
+      });
+    </script>
   </body>
 </html>
-

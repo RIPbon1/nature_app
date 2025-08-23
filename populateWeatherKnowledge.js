@@ -1,4 +1,3 @@
-// populateWeatherKnowledge.js
 import { pipeline } from '@xenova/transformers';
 import sqlite3pkg from 'sqlite3';
 
@@ -7,7 +6,7 @@ const sqlite3 = sqlite3pkg.verbose();
 async function populateWeatherKnowledge() {
   console.log('🌤️ Starting weather knowledge population...');
   
-  // Open existing database
+
   const db = new sqlite3.Database("weather_knowledge.db", (err) => {
     if (err) {
       console.error("❌ Error opening database:", err);
@@ -32,12 +31,12 @@ async function populateWeatherKnowledge() {
     });
   });
 
-  // Load embedding model
+
   console.log("🧠 Loading embedding model...");
   const embedder = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
   console.log("✅ Embedding model loaded");
 
-  // Prepare 50 weather and climate entries (comprehensive knowledge base)
+
   const entries = [
     { title: "Air Quality Index (AQI) Guidelines", content: "AQI is a standardized system for measuring air quality. Values 0-50 are considered good, 51-100 moderate, 101-150 unhealthy for sensitive groups, 151-200 unhealthy, 201-300 very unhealthy, and 301+ hazardous. During poor air quality days, limit outdoor activities and use air purifiers indoors.", category: "Air Quality", tags: "aqi, air quality, health, pollution" },
     { title: "Thunderstorm Safety Guidelines", content: "During thunderstorms, seek shelter indoors immediately. Avoid open areas, tall objects, and water. If caught outside, crouch low with feet together and minimize contact with the ground. Stay away from windows and electrical equipment during lightning storms. Wait 30 minutes after last thunder before resuming outdoor activities.", category: "Storm Safety", tags: "thunderstorm, lightning, safety, shelter" },
@@ -95,7 +94,7 @@ async function populateWeatherKnowledge() {
 
   console.log(`📚 Processing ${entries.length} weather knowledge entries...`);
 
-  // Function to insert entry with promise
+
   function insertEntry(entry, embedding) {
     return new Promise((resolve, reject) => {
       const vector = Buffer.from(new Float32Array(embedding.data).buffer);
@@ -114,16 +113,16 @@ async function populateWeatherKnowledge() {
     });
   }
 
-  // Generate embeddings and insert
+
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
     try {
       console.log(`🔄 Processing: ${entry.title} (${i + 1}/${entries.length})`);
       
-      // Generate embedding
+
       const embedding = await embedder(entry.content, { pooling: "mean", normalize: true });
       
-      // Insert into database
+
       await insertEntry(entry, embedding);
       
       console.log(`✅ Inserted: ${entry.title}`);
@@ -134,7 +133,7 @@ async function populateWeatherKnowledge() {
 
   console.log("🌤️ All weather knowledge entries processed successfully!");
   
-  // Close database
+
   db.close((err) => {
     if (err) {
       console.error("❌ Error closing database:", err);
@@ -144,5 +143,5 @@ async function populateWeatherKnowledge() {
   });
 }
 
-// Run the population
+
 populateWeatherKnowledge().catch(console.error);

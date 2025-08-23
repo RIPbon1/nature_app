@@ -21,21 +21,66 @@
         color: #355b7d;
         margin: 0 0 20px 0;
       }
-      .cta-row { display: flex; gap: 14px; margin-top: 12px; }
-      .btn { background: #2f8bf5; color: #fff; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; font-weight: 600; }
-      .btn.secondary { background: #f5f7fb; color: #2f8bf5; border: 1px solid #cfe0ff; }
-      .feature-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 40px 40px 40px; }
-      .feature-card { background: #fff; border: 1px solid #e9eef5; border-radius: 12px; padding: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
-      .feature-title { margin: 0 0 6px 0; font-weight: 700; color: #1f2d3d; }
-      .feature-desc { margin: 0; color: #586f85; font-size: 14px; }
-      .illustration { justify-self: end; width: 420px; max-width: 90%; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.1)); }
+      .cta-row { 
+        display: flex; 
+        gap: 14px; 
+        margin-top: 12px; 
+      }
+      .btn { 
+        background: #2f8bf5; 
+        color: #fff; 
+        border: none; 
+        padding: 12px 18px; 
+        border-radius: 10px; 
+        cursor: pointer; 
+        text-decoration: none; 
+        font-weight: 600; 
+      }
+      .btn.secondary { 
+        background: #f5f7fb; 
+        color: #2f8bf5; 
+        border: 1px solid #cfe0ff; 
+      }
+      .feature-cards { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 16px; 
+        padding: 0 40px 40px 40px; 
+      }
+      .feature-card { 
+        background: #fff; 
+        border: 1px solid #e9eef5; 
+        border-radius: 12px; 
+        padding: 16px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+      }
+      .feature-title { 
+        margin: 0 0 6px 0; 
+        font-weight: 700; 
+        color: #1f2d3d; 
+      }
+      .feature-desc { 
+        margin: 0; 
+        color: #586f85; 
+        font-size: 14px; 
+      }
+      .illustration { 
+        justify-self: end; 
+        width: 420px; 
+        max-width: 90%; 
+        filter: drop-shadow(0 12px 24px rgba(0,0,0,0.1)); 
+      }
+      .header-title {
+        text-decoration: none;
+        color: white;
+      }
     </style>
   </head>
   <body>
     <div class="header">
       <div class="header-left">
         <img src="/static/weather.png" class="header-logo" alt="Logo">
-        <div class="header-title">AirAware</div>
+        <a href="/"class="header-title">AirAware</a>
       </div>
       <div class="header-right">
         <a href="/" class="header-link">Home</a>

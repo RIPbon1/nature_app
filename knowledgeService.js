@@ -1,4 +1,4 @@
-// Enhanced knowledge service for weather-related information with SQLite integration
+
 import sqlite3pkg from 'sqlite3';
 
 const sqlite3 = sqlite3pkg.verbose();
@@ -10,7 +10,7 @@ class KnowledgeService {
     this.useDatabase = false;
     this.initializeDatabase();
     
-    // Fallback knowledge base (existing)
+
     this.fallbackKnowledgeBase = [
       {
         title: "Air Quality Index (AQI) Guidelines",
@@ -77,7 +77,7 @@ class KnowledgeService {
 
   async searchDatabase(query, topK) {
     return new Promise((resolve, reject) => {
-      // For now, use simple text search until embeddings are implemented
+ 
       const searchQuery = `%${query}%`;
       
       this.db.all(
@@ -98,7 +98,7 @@ class KnowledgeService {
           } else {
             const results = rows.map((row, index) => ({
               ...row,
-              similarity: 1.0 - (index * 0.1) // Simple ranking
+              similarity: 1.0 - (index * 0.1) 
             }));
             resolve(results);
           }
@@ -121,25 +121,25 @@ class KnowledgeService {
   calculateSimilarity(query, title, content) {
     let score = 0;
     
-    // Check title relevance
+
     const titleWords = title.split(' ');
     const queryWords = query.split(' ');
     
     titleWords.forEach(word => {
       if (queryWords.includes(word)) {
-        score += 0.4; // Title matches are weighted higher
+        score += 0.4;
       }
     });
 
-    // Check content relevance
+
     const contentWords = content.split(' ');
     contentWords.forEach(word => {
       if (queryWords.includes(word)) {
-        score += 0.1; // Content matches add smaller weight
+        score += 0.1; 
       }
     });
 
-    // Normalize score
+
     return Math.min(score, 1.0);
   }
 

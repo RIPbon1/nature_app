@@ -1,12 +1,9 @@
-// Simple script to run weather knowledge population
-// This is a CommonJS version for easier integration
-
 const { spawn } = require('child_process');
 const path = require('path');
 
 console.log('🌤️ Starting weather knowledge population...');
 
-// Run the population script
+
 const child = spawn('node', ['populateWeatherKnowledge.js'], {
   stdio: 'inherit',
   cwd: __dirname

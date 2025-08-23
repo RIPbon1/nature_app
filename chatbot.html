@@ -11,11 +11,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 70px); /* header space */
+    height: calc(100vh - 70px);
     background: linear-gradient(to right, #e0f7fa, #f1f8e9);
     padding: 20px;
   }
-
   .chatbot-window {
     width: 100%;
     max-width: 500px;
@@ -27,40 +26,36 @@
     flex-direction: column;
     overflow: hidden;
   }
-
   .chatbot-messages {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
     font-size: 15px;
   }
-
   .user-message, .bot-message {
-    padding: 10px 14px;
-    margin: 8px 0;
-    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 10px 0;
+    border-radius: 14px;
     max-width: 80%;
+    line-height: 1.6;
+    font-size: 16px;
   }
-
   .user-message {
     background: #4cafef;
     color: white;
     align-self: flex-end;
   }
-
   .bot-message {
     background: #eeeeee;
     color: #333;
     align-self: flex-start;
   }
-
   .chatbot-input-area {
     display: flex;
     padding: 12px;
     border-top: 1px solid #ddd;
     background: #fafafa;
   }
-
   .chatbot-input-area input {
     flex: 1;
     padding: 12px;
@@ -70,7 +65,6 @@
     border-radius: 10px;
     background: #f0f0f0;
   }
-
   .chatbot-input-area button {
     margin-left: 10px;
     padding: 10px 18px;
@@ -81,17 +75,19 @@
     cursor: pointer;
     font-weight: bold;
   }
-
   .chatbot-input-area button:hover {
     background: #2196f3;
   }
+  .header-title {
+    text-decoration: none;
+    color: white;
+  }
 </style>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="header-left">
       <img src="/static/weather.png" class="header-logo" alt="Logo">
-      <div class="header-title">AirAware</div>
+      <a href="/" class="header-title">AirAware</a>
     </div>
     <nav class="header-right">
       <a href="/" class="header-link">Home</a>
@@ -101,11 +97,10 @@
     </nav>
   </header>
 
-  <!-- Chatbot Container -->
   <main class="chatbot-container">
     <div class="chatbot-window">
       <div class="chatbot-messages" id="chat-messages">
-        <div class="bot-message">👋 Hi! I’m AirAware. Ask me about weather, AQI, or health tips.</div>
+        <div class="bot-message">👋 Hi! I'm AirAware. Ask me about weather, AQI, or health tips.</div>
       </div>
       <div class="chatbot-input-area">
         <input type="text" id="chat-input" placeholder="Type your message..." />
@@ -113,98 +108,116 @@
       </div>
     </div>
   </main>
-
   <script>
-    const messages = document.getElementById("chat-messages");
-    const input = document.getElementById("chat-input");
-    const sendBtn = document.getElementById("send-btn");
-
-    // Conversation history for context
-    let conversationHistory = [];
-    let userLocation = null;
-
-    sendBtn.addEventListener("click", sendMessage);
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMessage();
-    });
-
-    async function sendMessage() {
-      const text = input.value.trim();
-      if (!text) return;
-
-      const userMsg = document.createElement("div");
-      userMsg.className = "user-message";
-      userMsg.innerText = text;
-      messages.appendChild(userMsg);
-      messages.scrollTop = messages.scrollHeight;
-
-      // Add to conversation history
-      conversationHistory.push({ isUser: true, content: text });
-
-      input.value = "";
-
-      const thinking = document.createElement("div");
-      thinking.className = "bot-message";
-      thinking.innerText = "🌤️ Let me check the weather information for you...";
-      messages.appendChild(thinking);
-      messages.scrollTop = messages.scrollHeight;
-
-      try {
-        const resp = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            message: text,
-            conversationHistory: conversationHistory.slice(-4), // Last 4 messages
-            userLocation: userLocation
-          })
-        });
-        const data = await resp.json();
-        thinking.remove();
-
-        const botMsg = document.createElement("div");
-        botMsg.className = "bot-message";
-        
-        // Handle HTML content from GroqRAGService
-        if (data?.answer) {
-          botMsg.innerHTML = data.answer;
-        } else {
-          botMsg.innerText = 'Sorry, I could not generate a weather response.';
-        }
-        
-        messages.appendChild(botMsg);
-        messages.scrollTop = messages.scrollHeight;
-
-        // Add to conversation history
-        conversationHistory.push({ isUser: false, content: data?.answer || 'No response generated' });
-
-      } catch (e) {
-        thinking.remove();
-        const botMsg = document.createElement("div");
-        botMsg.className = "bot-message";
-        botMsg.innerText = 'Error contacting the weather chatbot.';
-        messages.appendChild(botMsg);
-        messages.scrollTop = messages.scrollHeight;
+    document.addEventListener('DOMContentLoaded', function() {
+      const messages = document.getElementById("chat-messages");
+      const input = document.getElementById("chat-input");
+      const sendBtn = document.getElementById("send-btn");
+      // Conversation history for context
+      let conversationHistory = [];
+      let userLocation = null;
+      
+      sendBtn.addEventListener("click", sendMessage);
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+      
+      // Function to get URL parameters
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
-    }
-
-    // Try to get user location for better weather advice
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          userLocation = {
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-            city: 'Your Location',
-            country: 'Unknown'
-          };
-          console.log('Location obtained:', userLocation);
-        },
-        (error) => {
-          console.log('Location not available:', error.message);
+      
+      // Check if there's a message parameter in the URL
+      const initialMessage = getUrlParameter('message');
+      if (initialMessage) {
+        // Set the input value to the initial message
+        input.value = initialMessage;
+        // Send the message after a short delay to ensure the page is fully loaded
+        setTimeout(() => {
+          sendMessage();
+        }, 500);
+      }
+      
+      async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+        
+        const userMsg = document.createElement("div");
+        userMsg.className = "user-message";
+        userMsg.innerText = text;
+        messages.appendChild(userMsg);
+        messages.scrollTop = messages.scrollHeight;
+        
+        // Add to conversation history
+        conversationHistory.push({ isUser: true, content: text });
+        input.value = "";
+        
+        const thinking = document.createElement("div");
+        thinking.className = "bot-message";
+        thinking.innerText = "🌤️ Let me check the weather information for you...";
+        messages.appendChild(thinking);
+        messages.scrollTop = messages.scrollHeight;
+        
+        try {
+          const resp = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              message: text,
+              conversationHistory: conversationHistory.slice(-4), // Last 4 messages
+              userLocation: userLocation
+            })
+          });
+          
+          const data = await resp.json();
+          thinking.remove();
+          
+          const botMsg = document.createElement("div");
+          botMsg.className = "bot-message";
+          
+          // Handle HTML content from GroqRAGService
+          if (data?.answer) {
+            botMsg.innerHTML = data.answer;
+          } else {
+            botMsg.innerText = 'Sorry, I could not generate a weather response.';
+          }
+          
+          messages.appendChild(botMsg);
+          messages.scrollTop = messages.scrollHeight;
+          
+          // Add to conversation history
+          conversationHistory.push({ isUser: false, content: data?.answer || 'No response generated' });
+        } catch (e) {
+          thinking.remove();
+          const botMsg = document.createElement("div");
+          botMsg.className = "bot-message";
+          botMsg.innerText = 'Error contacting the weather chatbot.';
+          messages.appendChild(botMsg);
+          messages.scrollTop = messages.scrollHeight;
         }
-      );
-    }
+      }
+      
+      // Try to get user location for better weather advice
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            userLocation = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+              city: 'Your Location',
+              country: 'Unknown'
+            };
+            console.log('Location obtained:', userLocation);
+          },
+          (error) => {
+            console.log('Location not available:', error.message);
+          }
+        );
+      }
+    });
   </script>
 </body>
 </html>
