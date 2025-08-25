@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AirAware - Charts</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<style>
+  .header-title {
+    text-decoration: none;
+    color: white;
+  }
+  .charts-container {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+  }
+  .charts-container {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; /* Smaller gap */
+    width: 100%;
+    max-width: 900px; /* Even smaller */
+  }
+  .chart-card-full-width {
+    grid-column: 1 / -1;
+  }
+  .chart-card {
+    background: white;
+    border-radius: 15px; /* Smaller radius */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 15px; /* Smaller padding */
+  }
+  .chart-card h2 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: #333;
+  }
+</style>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <img src="/static/weather.png" class="header-logo" alt="Logo">
+      <a href="/" class="header-title">AirAware</a>
+    </div>
+    <nav class="header-right">
+      <a href="/" class="header-link">Home</a>
+      <a href="/weather" class="header-link">Weather</a>
+      <a href="/charts" class="header-link active">Charts</a>
+      <a href="/chatbot" class="header-link">Chatbot</a>
+      <a href="/contact" class="header-link">Contact</a>
+    </nav>
+  </header>
+
+  <main class="charts-container">
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h2>Your Location: Pollutants (µg/m³)</h2>
+        <canvas id="pollutants-chart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Your Location: Temp & Humidity</h2>
+        <canvas id="temp-humidity-chart"></canvas>
+      </div>
+      <div class="chart-card chart-card-full-width">
+        <h2>AQI Comparison (Major Indian Cities)</h2>
+        <canvas id="aqi-comparison-chart"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script>
+    const apiKey = '8fee7ce27770b9c50d38fb80d6b1f357';
+
+    window.onload = function () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async function (position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            await loadCharts(lat, lon);
+          },
+          function () {
+            const fallbackLat = 51.5074;
+            const fallbackLon = -0.1278;
+            loadCharts(fallbackLat, fallbackLon);
+          }
+        );
+      }
+    };
+
+    async function loadCharts(lat, lon) {
+      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+      const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+      const [weatherResponse, pollutionResponse] = await Promise.all([
+        fetch(weatherUrl),
+        fetch(pollutionUrl)
+      ]);
+
+      const weatherData = await weatherResponse.json();
+      const pollutionData = await pollutionResponse.json();
+
+      createPollutantsChart(pollutionData);
+      createTempHumidityChart(weatherData);
+      createAqiComparisonChart();
+    }
+
+    function createPollutantsChart(data) {
+      const components = data.list[0].components;
+      const chartData = {
+        'PM2.5': components.pm2_5, 'PM10': components.pm10,
+        'O3': components.o3, 'NO2': components.no2,
+      };
+      const ctx = document.getElementById('pollutants-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(chartData),
+          datasets: [{
+            label: 'Concentration',
+            data: Object.values(chartData),
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+          }]
+        }
+      });
+    }
+
+    function createTempHumidityChart(data) {
+      const ctx = document.getElementById('temp-humidity-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Current'],
+          datasets: [
+            {
+              label: 'Temperature (°C)',
+              data: [data.main.temp],
+              backgroundColor: '#FF6384',
+              yAxisID: 'y-temp',
+            },
+            {
+              label: 'Humidity (%)',
+              data: [data.main.humidity],
+              backgroundColor: '#36A2EB',
+              yAxisID: 'y-humidity',
+            }
+          ]
+        },
+        options: {
+          scales: {
+            'y-temp': {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: 'Temperature (°C)' }
+            },
+            'y-humidity': {
+              type: 'linear',
+              position: 'right',
+              title: { display: true, text: 'Humidity (%)' },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    async function createAqiComparisonChart() {
+      const cities = ['Delhi', 'Mumbai', 'Kolkata', 'Chennai', 'Bangalore'];
+      const aqiData = [];
+      const aqiColors = ['#4CAF50', '#FFEB3B', '#FFC107', '#F44336', '#B71C1C'];
+
+      for (const city of cities) {
+        const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city},IN&limit=1&appid=${apiKey}`;
+        const geoResponse = await fetch(geoUrl);
+        const geoData = await geoResponse.json();
+        if (geoData.length > 0) {
+          const { lat, lon } = geoData[0];
+          const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+          const pollutionResponse = await fetch(pollutionUrl);
+          const pollutionData = await pollutionResponse.json();
+          aqiData.push({ city, aqi: pollutionData.list[0].main.aqi });
+        }
+      }
+
+      const ctx = document.getElementById('aqi-comparison-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: aqiData.map(d => d.city),
+          datasets: [{
+            label: 'AQI',
+            data: aqiData.map(d => d.aqi),
+            backgroundColor: aqiData.map(d => aqiColors[d.aqi - 1]),
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          scales: {
+            x: {
+              ticks: {
+                stepSize: 1
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

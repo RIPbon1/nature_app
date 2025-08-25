@@ -120,35 +120,70 @@ async function checkAirQuality(lat, lon) {
   const markerLeft = ((aqi - 1) / 4) * 100;
   if (markerEl) markerEl.style.left = `${markerLeft}%`;
 
+  const recommendationsEl = document.querySelector('.aqi-recommendations');
+  if (recommendationsEl) recommendationsEl.innerHTML = '';
+
+  let recommendations = [];
+
   switch(aqi) {
     case 1:
       pollutionBox.style.background = 'linear-gradient(135deg, #4CAF50, #81C784)';
       if (detailEl) detailEl.textContent = 'Low pollution — fresh air. Enjoy outdoor activities!';
+      recommendations = [
+        { group: 'Asthma patients', advice: 'Safe to jog outside today.', icon: '✅' },
+        { group: 'Elderly', advice: 'Great day for a walk in the park.', icon: '✅' }
+      ];
       addTip("Air quality is good — open your windows and enjoy some fresh air.");
       break;
     case 2:
       pollutionBox.style.background = 'linear-gradient(135deg, #FFEB3B, #FBC02D)';
       if (detailEl) detailEl.textContent = 'Fair air quality — sensitive groups should monitor symptoms.';
+      recommendations = [
+        { group: 'Asthma patients', advice: 'Consider shorter outdoor activities.', icon: '⚠️' },
+        { group: 'Elderly', advice: 'Okay for short walks, but monitor for any symptoms.', icon: '⚠️' }
+      ];
       addTip("Air quality is fair — if sensitive, limit prolonged outdoor exertion.");
       break;
     case 3:
       pollutionBox.style.background = 'linear-gradient(135deg, #FFC107, #FF9800)';
       if (detailEl) detailEl.textContent = 'Moderate pollution — consider reducing outdoor time.';
+      recommendations = [
+        { group: 'Asthma patients', advice: 'Limit outdoor exposure and keep reliever inhaler handy.', icon: '❌' },
+        { group: 'Elderly', advice: 'Avoid strenuous activities outdoors.', icon: '❌' }
+      ];
       addTip("Moderate AQI — consider a mask if you have respiratory issues.");
       break;
     case 4:
       pollutionBox.style.background = 'linear-gradient(135deg, #757575, #BDBDBD)';
       if (detailEl) detailEl.textContent = 'Poor air quality — limit time outdoors.';
+      recommendations = [
+        { group: 'Asthma patients', advice: 'Stay indoors and use an air purifier if possible.', icon: '❌' },
+        { group: 'Elderly', advice: 'Limit outdoor exposure to a minimum.', icon: '❌' }
+      ];
       addTip("Poor air quality — limit outdoor activity, especially for children and seniors.");
       break;
     case 5:
       pollutionBox.style.background = 'linear-gradient(135deg, #B71C1C, #F44336)';
       if (detailEl) detailEl.textContent = 'Very poor air quality — avoid outdoor activities.';
+      recommendations = [
+        { group: 'Asthma patients', advice: 'Remain indoors with windows closed. Use air purifier.', icon: '❌' },
+        { group: 'Elderly', advice: 'Avoid leaving the house. Keep windows shut.', icon: '❌' }
+      ];
       addTip("Very poor AQI — wear a high-quality mask if you must go outside.");
       break;
     default:
       pollutionBox.style.background = 'linear-gradient(135deg, #ffffff, #e0e0e0)';
       if (detailEl) detailEl.textContent = 'Air quality data unavailable.';
+  }
+
+  if (recommendationsEl && recommendations.length > 0) {
+    const recommendationHTML = recommendations.map(rec => `
+      <div class="recommendation-item">
+        <span class="recommendation-icon">${rec.icon}</span>
+        <p><strong>${rec.group}:</strong> ${rec.advice}</p>
+      </div>
+    `).join('');
+    recommendationsEl.innerHTML = recommendationHTML;
   }
 
   if (pollutantsEl) {
