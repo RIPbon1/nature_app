@@ -64,6 +64,10 @@ app.get('/chatbot', (_req, res) => {
   res.sendFile(path.join(__dirname, 'chatbot.html'));
 });
 
+app.get('/charts', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'charts.html'));
+});
+
 // Dataset maintenance endpoints
 app.get('/api/datasets/stats', (_req, res) => {
   try {
