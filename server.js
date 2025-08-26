@@ -6,7 +6,7 @@ const { DatasetIndex } = require('./datasets/index');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 7860;
+const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(express.json());
